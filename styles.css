@@ -1,0 +1,486 @@
+/*
+  styles.css – Visual design and responsive layout for ColorfulTodo
+  ---------------------------------------------------------------
+  This stylesheet defines three colour themes (light, dark, solarized) using
+  CSS custom properties. The application layout is built with Flexbox and is
+  fully responsive. Drag‑and‑drop states and task animations are also styled.
+*/
+
+/* -------------------------------------------------------------------------- */
+/* Theme variables – default (light) and overrides */
+/* -------------------------------------------------------------------------- */
+:root {
+  /* Light theme defaults – these are used if no theme class is applied */
+  --color-bg: #f9f9f9;
+  --color-surface: #ffffff;
+  --color-primary: #3b82f6;   /* blue-500 */
+  --color-text: #1f2937;      /* gray-800 */
+  --color-muted: #6b7280;    /* gray-500 */
+  --color-accent: #f59e0b;    /* amber-500 */
+  --color-success: #10b981;   /* emerald-500 */
+  --color-danger: #ef4444;    /* red-500 */
+
+  /* Calculator specific variables – legacy names */
+  --calc-bg: #ffffff;
+  --calc-display-bg: #f1f3f4;
+  --calc-button-bg: #e0e0e0;
+  --calc-button-hover-bg: #d5d5d5;
+  --calc-operator-bg: #ff9500;
+  --calc-operator-color: #ffffff;
+  --calc-clear-bg: #ff3b30;
+  --calc-equals-bg: #34c759;
+  --calc-font-size: 1.5rem;
+  --calc-display-font-size: 2rem;
+  --calc-button-font-size: 1.25rem;
+  --calc-gap: 0.5rem;
+  --calc-padding: 1rem;
+  --calc-border-radius: 0.5rem;
+
+  /* New, generic calculator variables as requested */
+  --bg-color: var(--calc-bg);
+  --display-bg: var(--calc-display-bg);
+  --btn-bg: var(--calc-button-bg);
+  --btn-hover-bg: var(--calc-button-hover-bg);
+  --operator-bg: var(--calc-operator-bg);
+  --operator-color: var(--calc-operator-color);
+  --action-bg: var(--calc-clear-bg);
+  --equals-bg: var(--calc-equals-bg);
+  --font-size: var(--calc-font-size);
+  --display-font-size: var(--calc-display-font-size);
+  --button-font-size: var(--calc-button-font-size);
+  --spacing: var(--calc-gap);
+  --border-radius: var(--calc-border-radius);
+}
+
+.theme-light {
+  --color-bg: #f9f9f9;
+  --color-surface: #ffffff;
+  --color-primary: #3b82f6;
+  --color-text: #1f2937;
+  --color-muted: #6b7280;
+  --color-accent: #f59e0b;
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+}
+
+.theme-dark {
+  --color-bg: #1e1e1e;
+  --color-surface: #2d2d2d;
+  --color-primary: #60a5fa;   /* blue-400 */
+  --color-text: #f3f4f6;      /* gray-100 */
+  --color-muted: #9ca3af;    /* gray-400 */
+  --color-accent: #fbbf24;   /* amber-400 */
+  --color-success: #34d399;  /* emerald-400 */
+  --color-danger: #f87171;   /* red-400 */
+}
+
+.theme-solarized {
+  --color-bg: #fdf6e3;        /* solarized base3 */
+  --color-surface: #eee8d5;   /* solarized base2 */
+  --color-primary: #268bd2;   /* solarized blue */
+  --color-text: #657b83;      /* solarized base00 */
+  --color-muted: #93a1a1;     /* solarized base1 */
+  --color-accent: #cb4b16;    /* solarized orange */
+  --color-success: #859900;   /* solarized green */
+  --color-danger: #dc322f;    /* solarized red */
+}
+
+/* -------------------------------------------------------------------------- */
+/* Layout – #app container */
+/* -------------------------------------------------------------------------- */
+#app {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: var(--color-surface);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  color: var(--color-text);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Header, Input section, Footer – Flexbox alignment */
+/* -------------------------------------------------------------------------- */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  color: var(--color-primary);
+}
+
+.input-section {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.input-section input[type="text"] {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-muted);
+  border-radius: 0.375rem;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+.input-section button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.375rem;
+  background: var(--color-primary);
+  color: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s ease;
+}
+
+.input-section button:hover {
+  background: var(--color-accent);
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Task list items */
+/* -------------------------------------------------------------------------- */
+ul.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  background: var(--color-bg);
+  border-radius: 0.5rem;
+  transition: background 0.2s ease, transform 0.2s ease;
+  cursor: grab;
+}
+
+.task-item:hover {
+  background: var(--color-surface);
+}
+
+.task-item .task-text {
+  flex: 1;
+  margin-right: 0.5rem;
+  word-break: break-word;
+}
+
+.task-item button {
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 1rem;
+}
+
+.task-item button:hover {
+  color: var(--color-primary);
+}
+
+/* Completed tasks */
+.completed .task-text {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* Drag‑and‑drop visual cues */
+.dragging {
+  opacity: 0.5;
+}
+
+.drag-over {
+  border: 2px dashed var(--color-primary);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Responsive layout */
+/* -------------------------------------------------------------------------- */
+@media (max-width: 600px) {
+  .input-section {
+    flex-direction: column;
+  }
+
+  .input-section input[type="text"],
+  .input-section button {
+    width: 100%;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  .task-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .task-item button {
+    align-self: flex-end;
+    margin-top: 0.5rem;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Animations – task addition & removal */
+/* -------------------------------------------------------------------------- */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(-0.5rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(0.5rem); }
+}
+
+.task-item.added {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+.task-item.removed {
+  animation: fade-out 0.3s ease-out forwards;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Calculator specific styling – legacy selectors (kept for backward compatibility) */
+/* -------------------------------------------------------------------------- */
+
+/* Container */
+.calculator {
+  max-width: 400px;
+  margin: 2rem auto;
+  background: var(--calc-bg);
+  border-radius: var(--calc-border-radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: var(--calc-padding);
+}
+
+/* Display */
+.calculator-display {
+  width: 100%;
+  font-size: var(--calc-display-font-size);
+  padding: 0.5rem;
+  text-align: right;
+  border: none;
+  border-radius: 0.25rem;
+  background: var(--calc-display-bg);
+  color: var(--color-text);
+  margin-bottom: var(--calc-gap);
+  box-sizing: border-box;
+}
+
+/* Grid of buttons */
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--calc-gap);
+}
+
+.button-grid button {
+  font-size: var(--calc-button-font-size);
+  padding: 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  background: var(--calc-button-bg);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.button-grid button:hover,
+.button-grid button:focus {
+  background: var(--calc-button-hover-bg);
+  outline: none;
+}
+
+/* Operator buttons */
+.button-grid button[data-type="operator"] {
+  background: var(--calc-operator-bg);
+  color: var(--calc-operator-color);
+}
+
+.button-grid button[data-type="operator"]:hover,
+.button-grid button[data-type="operator"]:focus {
+  /* Hover uses same background as base for plain CSS */
+  background: var(--calc-operator-bg);
+}
+
+/* Clear button */
+.button-grid button[data-type="clear"] {
+  background: var(--calc-clear-bg);
+  color: #fff;
+}
+
+.button-grid button[data-type="clear"]:hover,
+.button-grid button[data-type="clear"]:focus {
+  background: var(--calc-clear-bg);
+}
+
+/* Equals button */
+.button-grid button[data-type="equals"] {
+  background: var(--calc-equals-bg);
+  color: #fff;
+}
+
+.button-grid button[data-type="equals"]:hover,
+.button-grid button[data-type="equals"]:focus {
+  background: var(--calc-equals-bg);
+}
+
+/* Responsive adjustments for calculator */
+@media (max-width: 600px) {
+  .calculator {
+    max-width: 100%;
+    margin: 1rem;
+    padding: 0.5rem;
+  }
+
+  .calculator-display {
+    font-size: 1.5rem;
+    padding: 0.4rem;
+  }
+
+  .button-grid button {
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .button-grid {
+    gap: 0.25rem;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* New calculator styling – matching the requested IDs/classes */
+/* -------------------------------------------------------------------------- */
+
+/* Calculator container */
+#calculator {
+  max-width: 400px;
+  margin: 2rem auto;
+  background: var(--bg-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: var(--spacing);
+}
+
+/* Display */
+#display {
+  width: 100%;
+  height: 3rem; /* fixed height */
+  font-size: var(--display-font-size);
+  padding: 0.5rem;
+  text-align: right;
+  background: var(--display-bg);
+  color: var(--color-text);
+  border: none;
+  border-radius: calc(var(--border-radius) / 2);
+  overflow: hidden;
+  box-sizing: border-box;
+  margin-bottom: var(--spacing);
+}
+
+/* Buttons grid */
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing);
+}
+
+/* Base button */
+.btn {
+  font-size: var(--button-font-size);
+  padding: 1rem;
+  background: var(--btn-bg);
+  color: var(--color-text);
+  border: none;
+  border-radius: calc(var(--border-radius) / 2);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.05s ease;
+}
+
+.btn:hover {
+  background: var(--btn-hover-bg);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+/* Digit buttons */
+.btn-digit {
+  /* Inherit base styling */
+}
+
+/* Operator buttons */
+.btn-operator {
+  background: var(--operator-bg);
+  color: var(--operator-color);
+}
+
+.btn-operator:hover {
+  background: var(--operator-bg);
+}
+
+/* Action buttons – clear, equals, etc. */
+.btn-action {
+  background: var(--action-bg);
+  color: #fff;
+}
+
+.btn-action:hover {
+  background: var(--action-bg);
+}
+
+/* Specific equals button (if needed) */
+.btn-action.equals {
+  background: var(--equals-bg);
+}
+
+.btn-action.equals:hover {
+  background: var(--equals-bg);
+}
+
+/* Responsive adjustments for the new calculator layout */
+@media (max-width: 600px) {
+  #calculator {
+    max-width: 100%;
+    margin: 1rem;
+    padding: calc(var(--spacing) / 2);
+  }
+
+  #display {
+    font-size: 1.5rem;
+    height: 2.5rem;
+    padding: 0.4rem;
+  }
+
+  .btn {
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .buttons {
+    gap: calc(var(--spacing) / 2);
+  }
+}
